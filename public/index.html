@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu Catálogo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <div>
+        <h1>Meu Catálogo</h1>
+        <p class="subtitle">Cadastre e gerencie seus filmes favoritos.</p>
+      </div>
+      <span class="badge-count" id="contador">0 filmes</span>
+    </header>
+
+    <main class="layout">
+      <!-- Formulário (estilo Shadcn Card) -->
+      <section class="card form-card">
+        <div class="card-header">
+          <h2 class="card-title">Novo filme</h2>
+          <p class="card-description">Preencha os campos para adicionar ao catálogo.</p>
+        </div>
+        <form id="form" class="card-content" autocomplete="off">
+          <div class="field">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" placeholder="Ex: Matrix" maxlength="150" required />
+          </div>
+          <div class="field">
+            <label for="categoria">Categoria</label>
+            <input id="categoria" name="categoria" type="text" placeholder="Ex: Ficção Científica" maxlength="80" required />
+          </div>
+          <div class="field">
+            <label for="descricao">Descrição</label>
+            <textarea id="descricao" name="descricao" rows="3" maxlength="500" placeholder="Breve sinopse..."></textarea>
+          </div>
+          <div class="field">
+            <label for="nota">Nota (0 a 10)</label>
+            <input id="nota" name="nota" type="number" min="0" max="10" step="0.1" placeholder="8.5" />
+          </div>
+          <button type="submit" class="btn btn-primary" id="submit-btn">Adicionar ao catálogo</button>
+          <p class="form-error" id="form-error" hidden></p>
+        </form>
+      </section>
+
+      <!-- Grid de cards -->
+      <section class="catalog">
+        <div id="grid" class="grid"></div>
+        <div id="empty" class="empty-state" hidden>
+          <p>Nenhum filme cadastrado ainda.</p>
+          <span>Use o formulário ao lado para começar.</span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

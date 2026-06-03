@@ -1,0 +1,16 @@
+{
+  "name": "meu-catalogo",
+  "version": "1.0.0",
+  "description": "Catálogo de filmes — CRUD com Express + MySQL",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "mysql2": "^3.11.0"
+  }
+}
