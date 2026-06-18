@@ -25,12 +25,12 @@ services:
       labels:
         - traefik.enable=true
         - traefik.docker.network=proxy-net
-        - traefik.http.routers.catalogo-app.rule=Host(`${APP_HOST}`)
-        - traefik.http.routers.catalogo-app.entrypoints=websecure
-        - traefik.http.routers.catalogo-app.tls=true
-        - traefik.http.routers.catalogo-app.tls.certresolver=le
-        - traefik.http.routers.catalogo-app.priority=10
-        - traefik.http.services.catalogo-app.loadbalancer.server.port=3000
+        - traefik.http.routers.dw-catalogo.rule=Host(`${APP_HOST}`)
+        - traefik.http.routers.dw-catalogo.entrypoints=websecure
+        - traefik.http.routers.dw-catalogo.tls=true
+        - traefik.http.routers.dw-catalogo.tls.certresolver=le
+        - traefik.http.routers.dw-catalogo.priority=10
+        - traefik.http.services.dw-catalogo.loadbalancer.server.port=3000
 
   mysql:
     # Pinned (not :8.4) so an upstream patch bump can't trigger a memory-heavy
