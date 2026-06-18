@@ -1,0 +1,81 @@
+services:
+  app:
+    # Serves both the static UI and the /api routes on a single port (3000).
+    image: ${CATALOGO_APP_IMAGE}
+    networks:
+      - proxy-net
+      - catalogo-net
+    environment:
+      PORT: "3000"
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_USER: root
+      DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      DB_NAME: catalogo
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        reservations:
+          memory: 32M
+        limits:
+          memory: 256M
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=proxy-net
+        - traefik.http.routers.catalogo-app.rule=Host(`${APP_HOST}`)
+        - traefik.http.routers.catalogo-app.entrypoints=websecure
+        - traefik.http.routers.catalogo-app.tls=true
+        - traefik.http.routers.catalogo-app.tls.certresolver=le
+        - traefik.http.routers.catalogo-app.priority=10
+        - traefik.http.services.catalogo-app.loadbalancer.server.port=3000
+
+  mysql:
+    # Pinned (not :8.4) so an upstream patch bump can't trigger a memory-heavy
+    # in-place server upgrade on restart. Bump deliberately when desired.
+    image: mysql:8.4.10
+    command:
+      # Keep RSS well under the limit so the kernel can't OOM-kill (exit 137).
+      - --innodb-buffer-pool-size=128M
+      - --innodb-redo-log-capacity=64M
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: catalogo
+    volumes:
+      - mysql_data:/var/lib/mysql
+    configs:
+      # Loaded by mysql entrypoint on FIRST init of an empty volume only.
+      - source: catalogo_schema
+        target: /docker-entrypoint-initdb.d/init.sql
+    networks:
+      - catalogo-net
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: any
+      resources:
+        reservations:
+          memory: 256M
+        limits:
+          memory: 1024M
+      placement:
+        constraints:
+          - node.role == manager
+
+networks:
+  proxy-net:
+    external: true
+  catalogo-net:
+    driver: overlay
+
+volumes:
+  mysql_data:
+
+configs:
+  catalogo_schema:
+    # Bump the config name (e.g. catalogo_schema_v2) if this SQL changes —
+    # swarm configs are immutable.
+    file: ./db/init.sql

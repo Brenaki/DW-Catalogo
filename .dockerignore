@@ -1,6 +1,12 @@
 node_modules
 npm-debug.log
 .env
+.env.example
 .git
 .gitignore
 *.md
+# Infra — não entra na imagem (build copia só src/ e public/)
+db
+docker-compose.yml
+stack-*.yml
+.dockerignore
