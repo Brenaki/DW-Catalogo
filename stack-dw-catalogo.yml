@@ -40,8 +40,8 @@ services:
           memory: 256M
       labels:
         - traefik.enable=true
-        - traefik.docker.network=proxy-net
-        - traefik.docker.lbswarm=true
+        - traefik.swarm.network=proxy-net
+        - traefik.swarm.lbswarm=true
         - traefik.http.routers.dw-catalogo.rule=Host(`${APP_HOST}`)
         - traefik.http.routers.dw-catalogo.entrypoints=websecure
         - traefik.http.routers.dw-catalogo.tls=true
