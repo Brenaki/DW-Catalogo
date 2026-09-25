@@ -12,9 +12,25 @@ services:
       DB_USER: root
       DB_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       DB_NAME: catalogo
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    stop_grace_period: 20s
     deploy:
       mode: replicated
       replicas: 1
+      update_config:
+        order: start-first
+        parallelism: 1
+        delay: 5s
+        failure_action: rollback
+        monitor: 30s
+      rollback_config:
+        order: start-first
+        parallelism: 1
       restart_policy:
         condition: any
       resources:
@@ -25,6 +41,7 @@ services:
       labels:
         - traefik.enable=true
         - traefik.docker.network=proxy-net
+        - traefik.docker.lbswarm=true
         - traefik.http.routers.dw-catalogo.rule=Host(`${APP_HOST}`)
         - traefik.http.routers.dw-catalogo.entrypoints=websecure
         - traefik.http.routers.dw-catalogo.tls=true
